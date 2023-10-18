@@ -1,10 +1,10 @@
-package org.processmining.newpackageivy.connections;
+package org.processmining.localityawareplacenetoracle.connections;
 
 import org.processmining.framework.connections.impl.AbstractConnection;
-import org.processmining.newpackageivy.models.YourFirstInput;
-import org.processmining.newpackageivy.models.YourOutput;
-import org.processmining.newpackageivy.models.YourSecondInput;
-import org.processmining.newpackageivy.parameters.YourParameters;
+import org.processmining.localityawareplacenetoracle.models.YourFirstInput;
+import org.processmining.localityawareplacenetoracle.models.YourOutput;
+import org.processmining.localityawareplacenetoracle.models.YourSecondInput;
+import org.processmining.localityawareplacenetoracle.parameters.YourParameters;
 
 public class YourConnection extends AbstractConnection {
 

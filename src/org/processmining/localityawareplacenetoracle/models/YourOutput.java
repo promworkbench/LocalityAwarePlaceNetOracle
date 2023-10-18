@@ -1,4 +1,4 @@
-package org.processmining.newpackageivy.models;
+package org.processmining.localityawareplacenetoracle.models;
 
 
 public class YourOutput {
