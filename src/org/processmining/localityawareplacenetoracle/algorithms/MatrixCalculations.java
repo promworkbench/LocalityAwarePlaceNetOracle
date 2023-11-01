@@ -6,10 +6,10 @@ import org.deckfour.xes.classification.XEventClass;
 import org.deckfour.xes.classification.XEventClasses;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
-import org.processmining.localityawareplacenetoracle.help.Pair;
 import org.processmining.localityawareplacenetoracle.models.DEFOutput;
 import org.processmining.localityawareplacenetoracle.models.DMOutput;
 import org.processmining.localityawareplacenetoracle.models.InterActivityRelationOutput;
+import org.processmining.localityawareplacenetoracle.models.Pair;
 
 public class MatrixCalculations {
 
@@ -116,7 +116,7 @@ public class MatrixCalculations {
         HashMap<Pair, Double> efWeightedMatrix = new HashMap<>();
 
         InterActivityRelationOutput results = new InterActivityRelationOutput();
-        int maxStep = Math.min(trace.size() - startIndex - 1, contexSize - 1);
+        int maxStep = Math.min(trace.size() - startIndex, contexSize);
 
         for (int step = 1; step <= maxStep; step++) {
             XEventClass from = classes.getClassOf(trace.get(startIndex));

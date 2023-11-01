@@ -1,4 +1,4 @@
-package org.processmining.localityawareplacenetoracle.help;
+package org.processmining.localityawareplacenetoracle.models;
 
 public class Pair {
     // Pair attributes

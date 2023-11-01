@@ -23,7 +23,7 @@ public class MyParameters {
     private Normalization normalizationApproach;
 
     public enum SequenceMatrix {
-        DF, EF, DDM, EDM, EFWEIGHTED
+        DF, EF, DDM, EDM, EFWEIGHTED, EDMWEIGHTED
     }
 
     public enum ChoiceMatrix {

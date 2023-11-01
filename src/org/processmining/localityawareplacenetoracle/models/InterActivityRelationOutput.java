@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.processmining.localityawareplacenetoracle.help.Pair;
-
 public class InterActivityRelationOutput {
 	private Set<Integer> activityIndices;
 	private int transitionsQuantity;
