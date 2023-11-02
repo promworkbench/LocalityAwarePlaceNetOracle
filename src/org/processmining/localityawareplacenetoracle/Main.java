@@ -29,7 +29,7 @@ import org.processmining.placebasedlpmdiscovery.model.serializable.PlaceSet;
 public class Main {
 
 		@Plugin(
-			name = "PLAPO",
+			name = "Locality Aware Place Net Oracle",
 			parameterLabels = {},
 			returnLabels = { "Set of Place Nets" },
 			returnTypes = { PlaceSet.class },
@@ -53,7 +53,7 @@ public class Main {
         
 		
 		
-		@PluginVariant(variantLabel = "Locality Aware Place Net Oracle", requiredParameterLabels = { 0, 1 })
+		@PluginVariant(variantLabel = "Place Oracle", requiredParameterLabels = { 0, 1 })
         @UITopiaVariant(
                 affiliation = "RWTH", 
                 author = "Narek Gevorgyan", 
@@ -128,7 +128,14 @@ public class Main {
         	}
         	
         	Set<Place> sequencePlaceNetSet = SequencePlaceNetDiscovery.discoverSequencePlaceNetSet(sequenceMatrix, sequenceThreshold, log);
-        	Set<Place> choicePlaceNetSet = ChoicePlaceNetDiscovery.discoverChoicePlaceNetSet(log, choiceComplexity, sequenceMatrix, sequenceThreshold, choiceMatrix, choiceThreshold);
+        	
+        	Set<Place> choicePlaceNetSet;
+        	if (choiceComplexity > 2) {
+        	    choicePlaceNetSet = ChoicePlaceNetDiscovery.discoverChoicePlaceNetSet(log, choiceComplexity, sequenceMatrix, sequenceThreshold, choiceMatrix, choiceThreshold);
+        	} else {
+        	    choicePlaceNetSet = new HashSet<>();
+        	}
+        	
         	PlaceSet resultingPlaceSet = PlaceNetIntegration.integratePlaceNets(sequencePlaceNetSet, choicePlaceNetSet, minimalPlaces);
         	long delta = System.nanoTime() - startTime;
         	System.out.println("===========================================================");
