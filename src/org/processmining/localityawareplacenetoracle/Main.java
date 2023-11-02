@@ -59,8 +59,8 @@ public class Main {
                 author = "Narek Gevorgyan", 
                 email = "narek.gevorgyan@rwth-aachen.de"
         )
-        public static PlaceSet LocalityAwarePlaceNetOracle(PluginContext context, XLog log, MyParameters params) {//, XEventClassifier classifier) {
-        	// fix starttime
+        public static PlaceSet LocalityAwarePlaceNetOracle(PluginContext context, XLog log, MyParameters params) {
+			
 			long startTime = System.nanoTime();
 			
         	
