@@ -8,12 +8,11 @@ import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.model.XLog;
 import org.processmining.placebasedlpmdiscovery.model.Place;
 import org.processmining.placebasedlpmdiscovery.model.Transition;
-import org.processmining.placebasedlpmdiscovery.model.serializable.PlaceSet;
 
 
 public class SequencePlaceNetDiscovery {
     
-	public static PlaceSet discoverSequencePlaceNetSet(double[][] sequenceMatrix, float sequenceThreshold, XLog log) {
+	public static Set<Place> discoverSequencePlaceNetSet(double[][] sequenceMatrix, double sequenceThreshold, XLog log) {
 		XEventClassifier classifier = log.getClassifiers().get(0);
 		XEventClasses classes = XEventClasses.deriveEventClasses(classifier, log);
 		
@@ -30,7 +29,7 @@ public class SequencePlaceNetDiscovery {
             }
         }
         
-        return new PlaceSet(places);
+        return places;
 	}
 	
 }

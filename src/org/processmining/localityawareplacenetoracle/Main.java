@@ -1,28 +1,29 @@
 package org.processmining.localityawareplacenetoracle;
 
 
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.deckfour.uitopia.api.event.TaskListener.InteractionResult;
-import org.deckfour.xes.classification.XEventClass;
 import org.deckfour.xes.classification.XEventClasses;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.model.XLog;
-import org.deckfour.xes.model.XTrace;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
 import org.processmining.framework.plugin.PluginContext;
 import org.processmining.framework.plugin.annotations.Plugin;
 import org.processmining.framework.plugin.annotations.PluginVariant;
-import org.processmining.placebasedlpmdiscovery.model.Place;
-import org.processmining.placebasedlpmdiscovery.model.Transition;
-import org.processmining.placebasedlpmdiscovery.model.serializable.PlaceSet;
-
-import org.processmining.localityawareplacenetoracle.parameters.MyParameters;
+import org.processmining.localityawareplacenetoracle.algorithms.ChoicePlaceNetDiscovery;
+import org.processmining.localityawareplacenetoracle.algorithms.MatrixCalculations;
+import org.processmining.localityawareplacenetoracle.algorithms.MatrixNormalization;
+import org.processmining.localityawareplacenetoracle.algorithms.PlaceNetIntegration;
+import org.processmining.localityawareplacenetoracle.algorithms.SequencePlaceNetDiscovery;
 import org.processmining.localityawareplacenetoracle.dialogs.MyDialog;
+import org.processmining.localityawareplacenetoracle.models.DEFOutput;
+import org.processmining.localityawareplacenetoracle.models.DMOutput;
+import org.processmining.localityawareplacenetoracle.parameters.MyParameters;
+import org.processmining.placebasedlpmdiscovery.model.Place;
+import org.processmining.placebasedlpmdiscovery.model.serializable.PlaceSet;
 
 
 public class Main {
@@ -47,12 +48,12 @@ public class Main {
 			if (result != InteractionResult.FINISHED) {
 				return null;
 			}
-			return AlphaLocalDiscovery(context, log, parameters);
+			return LocalityAwarePlaceNetOracle(context, log, parameters);
         }
         
 		
 		
-		@PluginVariant(variantLabel = "Place Oracle", requiredParameterLabels = { 0, 1 })
+		@PluginVariant(variantLabel = "Locality Aware Place Net Oracle", requiredParameterLabels = { 0, 1 })
         @UITopiaVariant(
                 affiliation = "RWTH", 
                 author = "Narek Gevorgyan", 
@@ -63,7 +64,7 @@ public class Main {
 			long startTime = System.nanoTime();
 			
         	
-        	int localWindowSize = params.getContextWindowSize();
+        	int contextWindowSize = params.getContextWindowSize();
 			int choiceComplexity = params.getChoicePNComplexity();
 			
 			double sequenceThreshold = params.getSequenceThreshold();
@@ -71,8 +72,8 @@ public class Main {
 			
 			boolean minimalPlaces = params.isMinimalPlaces();
 			
-			MyParameters.SequenceMatrix sequenceMatrix = params.getSequenceMatrix();
-			MyParameters.ChoiceMatrix choiceMatrix = params.getChoiceMatrix();
+			MyParameters.SequenceMatrix sequenceApproach = params.getSequenceMatrix();
+			MyParameters.ChoiceMatrix choiceApproach = params.getChoiceMatrix();
 			MyParameters.Normalization normalizationApproach = params.getNormalizationApproach();
 			
 
@@ -81,100 +82,60 @@ public class Main {
             
         	Set<Place> places = new HashSet<Place>();
         	
-
-
-			///     sequence relation parameters
-//        	double[][] seq_matrix = new double[classes.size()][classes.size()];
-//        	double divider_seq = eventsQuantity;
-//        	
-//        	if (normCoeff.equals("max")) {
-//        		divider_seq = 0;
-//        	}
-//        	
-//        	// add sequence places 
-//        	switch(sequenceApproach) {
-//                case "DF matrix":
-//                	if (divider_seq == 0) {
-//                		divider_seq = maxDFMatrix; 
-//                	}
-//                	seq_matrix = DFMatrix;
-//                	break;                
-//                case "EF matrix":
-//                	if (divider_seq == 0) {
-//                		divider_seq = maxEFMatrix; 
-//                	} 
-//                	seq_matrix = EFMatrix;
-//                	break;
-//                case "EF matrix weighted":
-//                	if (divider_seq == 0) {
-//                		divider_seq = maxEFMatrixWeighted; 
-//                	} 
-//                	seq_matrix = EFMatrixWeighted;                	
-//                	break;
-//                case "HM matrix":  
-//                	seq_matrix = HMMatrix;
-//                	divider_seq = 1.0;
-//                	break;
-//                case "HM matrix based on EF":  
-//                	seq_matrix = HMMatrixEF;             
-//                	divider_seq = 1.0;
-//                	break;
-//                case "HM matrix based on EF weighted":  
-//                	seq_matrix = HMMatrixWeighted;
-//                	divider_seq = 1.0;
-//                	break;
-//        	}
-//
-//			///     choice relation parameters
-//        	double[][] choice_matrix = new double[classes.size()][classes.size()];
-//        	double divider_choice = eventsQuantity;
-//        	
-//        	if (normCoeff.equals("max")) {
-//        		divider_choice = 0;
-//        	}
-//        	
-//        	// add sequence places 
-//        	switch(choiseApproach) {
-//                case "DF matrix":
-//                	if (divider_choice == 0) {
-//                		divider_choice = maxDFMatrix; 
-//                	}
-//                	choice_matrix = DFMatrix;
-//                	break;                
-//                case "EF matrix":
-//                	if (divider_choice == 0) {
-//                		divider_choice = maxEFMatrix; 
-//                	} 
-//                	choice_matrix = EFMatrix;
-//                	break;
-//                case "EF matrix weighted":
-//                	if (divider_choice == 0) {
-//                		divider_choice = maxEFMatrixWeighted; 
-//                	} 
-//                	choice_matrix = EFMatrixWeighted;                	
-//                	break;
-//                case "HM matrix":  
-//                	choice_matrix = HMMatrix;
-//                	divider_choice = 1.0;
-//                	break;
-//                case "HM matrix based on EF":  
-//                	choice_matrix = HMMatrixEF;             
-//                	divider_choice = 1.0;
-//                	break;
-//                case "HM matrix based on EF weighted":  
-//                	choice_matrix = HMMatrixWeighted;
-//                	divider_choice = 1.0;
-//                	break;
-//        	}
-//
-//        	
-
         	
+        	// Calculate matrices DF, EF and EF weighted
+        	DEFOutput defMatrix =  MatrixCalculations.calculateDEFMatrix(log, classes, contextWindowSize);
+        	
+        	// Calculate matrices DDM, EDM and EDM weighted
+        	DMOutput dmMatrix = MatrixCalculations.calculateDMmatrix(defMatrix);
+        	
+        	double[][] sequenceMatrix = MatrixCalculations.initializeMatrix(classes.size());
+        	double[][] choiceMatrix = MatrixCalculations.initializeMatrix(classes.size());
+        	
+        	
+        	
+        	switch (sequenceApproach) {
+        		case DF:
+        			sequenceMatrix = MatrixNormalization.normalize(defMatrix.dfMatrix, normalizationApproach);
+        			break;
+        		case EF:
+        			sequenceMatrix = MatrixNormalization.normalize(defMatrix.efMatrix, normalizationApproach);
+        			break;
+        		case DDM:
+        			sequenceMatrix = dmMatrix.ddmMatrix;
+        			break;
+        		case EDM:
+        			sequenceMatrix = dmMatrix.edmMatrix;
+        			break;
+        		case EFWEIGHTED:
+        			sequenceMatrix = MatrixNormalization.normalize(defMatrix.efWeightedMatrix, normalizationApproach);
+        			break;
+        		case EDMWEIGHTED:
+        			sequenceMatrix = defMatrix.efWeightedMatrix;		
+        	}
+        	
+
+ 
+        	switch (choiceApproach) {
+        		case DDM:
+        			choiceMatrix = dmMatrix.ddmMatrix;
+        			break;
+        		case EDM:
+        			choiceMatrix = dmMatrix.edmMatrix;
+        			break;
+        		case EDMWEIGHTED:
+        			choiceMatrix = dmMatrix.edmWeightedMatrix;		
+        	}
+        	
+        	Set<Place> sequencePlaceNetSet = SequencePlaceNetDiscovery.discoverSequencePlaceNetSet(sequenceMatrix, sequenceThreshold, log);
+        	Set<Place> choicePlaceNetSet = ChoicePlaceNetDiscovery.discoverChoicePlaceNetSet(log, choiceComplexity, sequenceMatrix, sequenceThreshold, choiceMatrix, choiceThreshold);
+        	PlaceSet resultingPlaceSet = PlaceNetIntegration.integratePlaceNets(sequencePlaceNetSet, choicePlaceNetSet, minimalPlaces);
         	long delta = System.nanoTime() - startTime;
         	System.out.println("===========================================================");
         	System.out.println("Number of places: " + places.size());
         	System.out.println("Runtime " + delta / 1e9 + "S");
         	System.out.println("===========================================================");
-        	return new PlaceSet(places);
+        	return resultingPlaceSet;
 			
         }
+}	

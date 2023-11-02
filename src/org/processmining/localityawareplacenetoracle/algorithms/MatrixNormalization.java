@@ -1,6 +1,8 @@
 package org.processmining.localityawareplacenetoracle.algorithms;
 import java.util.Arrays;
 
+import org.processmining.localityawareplacenetoracle.parameters.MyParameters;
+
 
 public class MatrixNormalization {
     
@@ -47,8 +49,8 @@ public class MatrixNormalization {
             logTransformedMatrix[i] = new double[matrix[i].length];
             for (int j = 0; j < matrix[i].length; j++) {
                 // Ensure the value is positive for log transformation
-                if (matrix[i][j] <= 0) {
-                    throw new IllegalArgumentException("Matrix elements must be positive for log transformation.");
+                if (matrix[i][j] < 0) {
+                    throw new IllegalArgumentException("Matrix elements must be non-negative for log transformation.");
                 }
                 logTransformedMatrix[i][j] = Math.log(matrix[i][j] + 1);
 
@@ -108,6 +110,18 @@ public class MatrixNormalization {
 
         // Apply min-max normalization
         return normalizeMatrixMinMax(matrix);
+    }
+    
+    public static double[][] normalize(double[][] matrix, MyParameters.Normalization approach) {
+    	switch (approach) {
+    		case MINMAX:
+    			return normalizeMatrixMinMax(matrix);
+    		case LOG:
+    			return normalizeMatrixLogMinMax(matrix);
+    		case WINSOR:
+    			return normalizeMatrixWinsorizeMinMax(matrix, 5, 95);
+    	}
+    	return normalizeMatrixMinMax(matrix);
     }
 
 

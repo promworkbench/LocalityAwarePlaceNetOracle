@@ -11,13 +11,12 @@ import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.model.XLog;
 import org.processmining.placebasedlpmdiscovery.model.Place;
 import org.processmining.placebasedlpmdiscovery.model.Transition;
-import org.processmining.placebasedlpmdiscovery.model.serializable.PlaceSet;
 
 
 public class ChoicePlaceNetDiscovery {
 
     
-    public static PlaceSet discoverChoicePlaceNetSet(XLog log, int k, double[][] seq_matrix, double seq_threshold, double[][] choice_matrix, double choice_threshold) {
+    public static Set<Place> discoverChoicePlaceNetSet(XLog log, int k, double[][] seq_matrix, double seq_threshold, double[][] choice_matrix, double choice_threshold) {
         if (k < 3) {
             throw new IllegalArgumentException("k must be at least 3.");
         }
@@ -27,7 +26,7 @@ public class ChoicePlaceNetDiscovery {
 
         Set<Place> places = new HashSet<>();
         generateSetsRecursive(new ArrayList<>(), seq_matrix.length, 0, k, places, seq_matrix, seq_threshold, choice_matrix, choice_threshold, classes);
-        return new PlaceSet(places);
+        return places;
     }
     
     private static void generateSetsRecursive(List<Integer> currentSet, int m, int startIndex, int k, Set<Place> places, double[][] seq_matrix, double seq_threshold, double[][] choice_matrix, double choice_threshold, XEventClasses classes) {

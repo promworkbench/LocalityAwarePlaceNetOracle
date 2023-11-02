@@ -116,7 +116,7 @@ public class MatrixCalculations {
         HashMap<Pair, Double> efWeightedMatrix = new HashMap<>();
 
         InterActivityRelationOutput results = new InterActivityRelationOutput();
-        int maxStep = Math.min(trace.size() - startIndex, contexSize);
+        int maxStep = Math.min(trace.size() - startIndex - 1, contexSize);
 
         for (int step = 1; step <= maxStep; step++) {
             XEventClass from = classes.getClassOf(trace.get(startIndex));

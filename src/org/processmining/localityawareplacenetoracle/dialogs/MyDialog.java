@@ -140,7 +140,7 @@ public class MyDialog extends JPanel {
 		add(classifierScrollPane, "1, 2");
 		
 		//////////////// CHOICE MATRIX
-		Object approaches_choice[] = new Object [6];
+		Object approaches_choice[] = new Object [3];
 		approaches_choice[0] = "DDM matrix";
 		approaches_choice[1] = "EDM matrix";
 		approaches_choice[2] = "EDM weighted matrix";
@@ -157,8 +157,8 @@ public class MyDialog extends JPanel {
         choiceMatrixMap.put("EDM weighted matrix", MyParameters.ChoiceMatrix.EDMWEIGHTED);
 		
 		approachListChoice.addListSelectionListener(new ListSelectionListener() {
-			MyParameters.ChoiceMatrix selection = choiceMatrixMap.get((String) approachListChoice.getSelectedValue());
 			public void valueChanged(ListSelectionEvent e) {
+				MyParameters.ChoiceMatrix selection = choiceMatrixMap.get((String) approachListChoice.getSelectedValue());
 				parameters.setChoiceMatrix(selection);
 			}
 		});
