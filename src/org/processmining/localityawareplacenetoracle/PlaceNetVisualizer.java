@@ -6,7 +6,7 @@ import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.contexts.uitopia.annotations.Visualizer;
 import org.processmining.framework.plugin.annotations.Plugin;
 import org.processmining.placebasedlpmdiscovery.model.serializable.PlaceSet;
-import org.processmining.placebasedlpmdiscovery.plugins.visualization.visualizers.PlaceSetVisualizer;
+import org.processmining.placebasedlpmdiscovery.prom.plugins.visualization.visualizers.PlaceSetVisualizer;
 
 public class PlaceNetVisualizer {
 
