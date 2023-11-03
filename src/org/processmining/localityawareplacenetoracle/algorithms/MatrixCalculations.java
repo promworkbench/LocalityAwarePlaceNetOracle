@@ -38,7 +38,7 @@ public class MatrixCalculations {
             if (!trace.isEmpty()) {
                 for (int start_ind = 0; start_ind < trace.size() - 1; start_ind++) {
                     InterActivityRelationOutput localDEFMatrrix = calculateLocalDEFMatrrix(trace, start_ind, contextWindowSize, classes);
-                    for (Pair index : localDEFMatrrix.getDfMatrix().keySet()) {
+                    for (Pair index : localDEFMatrrix.getEfMatrix().keySet()) {
                         int index1 = index.getIndex1();
                         int index2 = index.getIndex2();
                         		
@@ -49,9 +49,9 @@ public class MatrixCalculations {
                         efMatrix[index1][index2] += localDEFMatrrix.getEfMatrix().get(index);
                         efWeightedMatrix[index1][index2] += localDEFMatrrix.getEfWeightedMatrix().get(index);
 
-                        maxDFMatrix = Math.max(maxDFMatrix, dfMatrix[index1][index2]);
-                        maxEFMatrix = Math.max(maxEFMatrix, efMatrix[index1][index2]);
-                        maxEFWeightedMatrix = Math.max(maxEFWeightedMatrix, efWeightedMatrix[index1][index2]);
+//                        maxDFMatrix = Math.max(maxDFMatrix, dfMatrix[index1][index2]);
+//                        maxEFMatrix = Math.max(maxEFMatrix, efMatrix[index1][index2]);
+//                        maxEFWeightedMatrix = Math.max(maxEFWeightedMatrix, efWeightedMatrix[index1][index2]);
                     }
 
                 }
@@ -87,18 +87,16 @@ public class MatrixCalculations {
     			if (i == j) {
     				ddmMatrix[i][j] = dfMatrix[i][j] / (dfMatrix[i][j] + 1);
     				edmMatrix[i][j] = efMatrix[i][j] / (efMatrix[i][j] + 1);
-    				efWeightedMatrix[i][j] = edmWeightedMatrix[i][j] / (edmWeightedMatrix[i][j] + 1);
+    				edmWeightedMatrix[i][j] = efWeightedMatrix[i][j] / (efWeightedMatrix[i][j] + 1);
+    				
     			} else {
-    				//HMMatrix[i][j] = (java.lang.Math.abs(DFMatrix[i][j]) - java.lang.Math.abs(DFMatrix[j][i])) / (java.lang.Math.abs(DFMatrix[i][j]) + java.lang.Math.abs(DFMatrix[j][i]) + 1);
     				ddmMatrix[i][j] = (dfMatrix[i][j] - dfMatrix[j][i]) / (dfMatrix[i][j] + dfMatrix[j][i] + 1);
     				ddmMatrix[j][i] = - ddmMatrix[i][j];
     				
-    				//HMMatrixEF[i][j] = (java.lang.Math.abs(EFMatrix[i][j]) - java.lang.Math.abs(EFMatrix[j][i])) / (java.lang.Math.abs(EFMatrix[i][j]) + java.lang.Math.abs(EFMatrix[j][i]) + 1);
     				edmMatrix[i][j] = (efMatrix[i][j] - efMatrix[j][i]) / (efMatrix[i][j] + efMatrix[j][i] + 1);
     				edmMatrix[j][i] = - edmMatrix[i][j];
     				
-    				//HMMatrixWeighted[i][j] = (java.lang.Math.abs(EFMatrixWeighted[i][j]) - java.lang.Math.abs(EFMatrixWeighted[j][i])) / (java.lang.Math.abs(EFMatrixWeighted[i][j]) + java.lang.Math.abs(EFMatrixWeighted[j][i]) + 1);
-    				edmWeightedMatrix[i][j] = (edmWeightedMatrix[i][j] - edmWeightedMatrix[j][i]) / (edmWeightedMatrix[i][j] + edmWeightedMatrix[j][i] + 1);
+    				edmWeightedMatrix[i][j] = (efWeightedMatrix[i][j] - efWeightedMatrix[j][i]) / (efWeightedMatrix[i][j] + efWeightedMatrix[j][i] + 1);
     				edmWeightedMatrix[j][i] = - edmWeightedMatrix[i][j];
     			}
     		
