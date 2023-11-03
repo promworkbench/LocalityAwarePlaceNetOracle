@@ -8,7 +8,7 @@
 	<property name="dist" location="dist" />
 	<property name="release" location="latestrelease" />
 	<property name="version" value="${env.major_minor}.${env.GITHUB_RUN_NUMBER}" />
-	<property name="project" value="Precision" />
+	<property name="project" value="LocalityAwarePlaceNetOracle" />
 
 	<property name="author" value="Narek Gevorgyan" />
 	<property name="organization" value="RWTH Aachen" />
