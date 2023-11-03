@@ -25,11 +25,11 @@ public class ChoicePlaceNetDiscovery {
 		
 
         Set<Place> places = new HashSet<>();
-        generateSetsRecursive(new ArrayList<>(), seq_matrix.length, 0, k, places, seq_matrix, seq_threshold, choice_matrix, choice_threshold, classes);
+        generateSetsRecursive(new ArrayList<>(), seq_matrix.length, k, places, seq_matrix, seq_threshold, choice_matrix, choice_threshold, classes);
         return places;
     }
     
-    private static void generateSetsRecursive(List<Integer> currentSet, int m, int startIndex, int k, Set<Place> places, double[][] seq_matrix, double seq_threshold, double[][] choice_matrix, double choice_threshold, XEventClasses classes) {
+    private static void generateSetsRecursive(List<Integer> currentSet, int m, int k, Set<Place> places, double[][] seq_matrix, double seq_threshold, double[][] choice_matrix, double choice_threshold, XEventClasses classes) {
         if (currentSet.size() >= 3) {
             List<List<List<Integer>>> partitions = evaluateCriteria(currentSet, seq_matrix, seq_threshold, choice_matrix, choice_threshold);
             for (List<List<Integer>> partition : partitions) {
@@ -41,7 +41,10 @@ public class ChoicePlaceNetDiscovery {
                 for (int output : partition.get(1)) {
                     newPlace.addOutputTransition(new Transition(classes.getByIndex(output).toString(), false));
                 }
-                places.add(newPlace);
+                
+                if (newPlace.getInputTransitions().size() + newPlace.getOutputTransitions().size() > 2) {
+                	places.add(newPlace);
+                }
             }
         }
 
@@ -49,10 +52,10 @@ public class ChoicePlaceNetDiscovery {
             return;
         }
 
-        for (int i = startIndex; i < m; i++) {
+        for (int i = 0; i < m; i++) {
             List<Integer> newSet = new ArrayList<>(currentSet);
             newSet.add(i);
-            generateSetsRecursive(newSet, m, i + 1, k, places, seq_matrix, seq_threshold, choice_matrix, choice_threshold, classes);
+            generateSetsRecursive(newSet, m, k, places, seq_matrix, seq_threshold, choice_matrix, choice_threshold, classes);
         }
     }
     

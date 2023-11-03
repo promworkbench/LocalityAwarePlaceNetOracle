@@ -139,7 +139,7 @@ public class Main {
         	PlaceSet resultingPlaceSet = PlaceNetIntegration.integratePlaceNets(sequencePlaceNetSet, choicePlaceNetSet, minimalPlaces);
         	long delta = System.nanoTime() - startTime;
         	System.out.println("===========================================================");
-        	System.out.println("Number of places: " + places.size());
+        	System.out.println("Number of places: " + resultingPlaceSet.size());
         	System.out.println("Runtime " + delta / 1e9 + "S");
         	System.out.println("===========================================================");
         	return resultingPlaceSet;

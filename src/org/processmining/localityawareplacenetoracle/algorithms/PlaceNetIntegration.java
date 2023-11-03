@@ -37,6 +37,17 @@ public class PlaceNetIntegration {
             }
             Pchoice.removeAll(toRemove);
 
+            // Removing subsets from Pchoice
+            toRemove = new HashSet<>();
+            for (Place pc1 : Pchoice) {
+                for (Place pc2 : Pchoice) {
+                    if (isSubsetPlace(pc1, pc2)) {
+                        toRemove.add(pc1);
+                    }
+                }
+            }
+            Pchoice.removeAll(toRemove);
+
             Pfinal.addAll(Pseq);
             Pfinal.addAll(Pchoice);
         }
@@ -55,11 +66,6 @@ public class PlaceNetIntegration {
             newPlace.addInputTransition(t);
         }
 
-        // Copy other properties (if needed)
-        newPlace.setNumTokens(originalPlace.getNumTokens());
-        newPlace.setFinal(originalPlace.isFinal());
-        // If there are other properties that need to be copied, do that here.
-
         return newPlace;
     }
     
@@ -75,6 +81,14 @@ public class PlaceNetIntegration {
         // Check if pc's input transitions contain ps's input transition and 
         // pc's output transitions contain ps's output transition
         return pc.isInputTransition(psInputTransition) && pc.isOutputTransition(psOutputTransition);
+    }
+
+    public static boolean isSubsetPlace(Place subset, Place superset) {
+        // Check if the input transitions of subset are contained in the input transitions of superset
+        // and the output transitions of subset are contained in the output transitions of superset.
+        return superset.getInputTransitions().containsAll(subset.getInputTransitions()) &&
+               superset.getOutputTransitions().containsAll(subset.getOutputTransitions()) &&
+               !subset.equals(superset); // Ensure we're not comparing the same object
     }
 
 }
